@@ -1,0 +1,11 @@
+{
+    "name": "Bee City",
+    "description": "Bee City is a Play-2-Earn NFT game, where the goal is to collect the most amount of honey and bee the most profitable beekeeper.",
+    "image": "https://gateway.pinata.cloud/ipfs/QmU3gT7bWFjsq4xbZtLrMZCaJLfKwR1TD3MNRVF4Jru9Rr/buzzy.png",
+    "attributes": [
+      {
+        "trait_type": "Shape",
+        "value": "Buzzy"
+      }
+    ]
+  }
