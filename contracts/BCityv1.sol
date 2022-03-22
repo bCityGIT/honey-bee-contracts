@@ -2,20 +2,20 @@
 
 pragma solidity ^0.8.12;
 
-import "./HONEY.sol";
+import "./HNYb.sol";
 import "@openzeppelin/contracts/token/ERC721/presets/ERC721PresetMinterPauserAutoId.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract BeeCityv1 is ERC721PresetMinterPauserAutoId {
+contract BCityv1 is ERC721PresetMinterPauserAutoId {
 
-    HONEY public HONEY_TOKEN = HONEY(0xA1dcF3a4a6ED6011640da82911b495F415C77C50);
+    HNYb public HNYb_TOKEN = HNYb(0x0981d7Ef2f928a6c72FB1E63560CD986b98C54f7);
 
     using Strings for uint256;
    
     uint16 public maxSupply = 9999;
     uint256 public price = 255000000000000000000; // start at 255MATIC
-    address payable treasury = payable(0x8D2c8eddd8136f91450E5462Db12E9E166DEFa97); // bee city treasury
-    address payable bank = payable(0xF66fc1861CaE4275Af265C9A5965F57A942d99D0); // bee city bank
+    address payable treasury = payable(0xaD4b5983a5bbcc29E6F0860D8f126B68A3850984); // bCity treasury
+    address payable bank = payable(0x050A45e7f5A36b836f2355904D4A7a7314B8d816); // bCity bank
 
     string URIRoot = "https://gateway.pinata.cloud/ipfs/QmZQZTxVvz1BNQJWodVUVceNSsLTtWu5qAfrMJzRSoNfPX/";
     struct Bee {
@@ -30,7 +30,7 @@ contract BeeCityv1 is ERC721PresetMinterPauserAutoId {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     
-    constructor() ERC721PresetMinterPauserAutoId("Bee City", "BEECITY", URIRoot) {
+    constructor() ERC721PresetMinterPauserAutoId("bCity", "BCITY", URIRoot) {
     }
 
     function updateBank(address payable _b) 
@@ -44,7 +44,7 @@ contract BeeCityv1 is ERC721PresetMinterPauserAutoId {
     public 
     {
         require(hasRole(MINTER_ROLE, _msgSender()), "You don't have permission to do this.");
-        HONEY_TOKEN = HONEY(_e);
+        HNYb_TOKEN = HNYb(_e);
     }
 
     function collectHoney(uint256 id)
@@ -54,7 +54,7 @@ contract BeeCityv1 is ERC721PresetMinterPauserAutoId {
         uint32 dayInSeconds = 86400;
         require(ownerOf(id) == msg.sender, "only owner can collect honey.");
         require(block.timestamp > (bee.honeyCollectedLast + dayInSeconds), "honey already collected.");
-        HONEY_TOKEN.mint(msg.sender, bee.honeyPerDay);
+        HNYb_TOKEN.mint(msg.sender, bee.honeyPerDay);
         bees[id].honeyCollectedLast = block.timestamp;
     }
 
@@ -71,7 +71,7 @@ contract BeeCityv1 is ERC721PresetMinterPauserAutoId {
                 bees[index].honeyCollectedLast = block.timestamp;
             }
         }
-        HONEY_TOKEN.mint(msg.sender, honey);
+        HNYb_TOKEN.mint(msg.sender, honey);
     }
     
     function changePrice(uint256 _price) public {
@@ -136,10 +136,10 @@ contract BeeCityv1 is ERC721PresetMinterPauserAutoId {
     returns (uint256)
     {
         if (shape == 0) {
-            return 70000000000000000000; // Queen
+            return 80000000000000000000; // Queen
         }
         else if (shape == 1) {
-            return 20000000000000000000; // Karen
+            return 24000000000000000000; // Karen
         }
         else if (shape == 2) {
             return 20000000000000000000; // Buzzy
