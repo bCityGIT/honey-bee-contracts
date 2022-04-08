@@ -7,8 +7,11 @@ import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 
 contract HONEYBANK is AccessControlEnumerable {
 
-    HNYb public HNYb_TOKEN = HNYb(0x0981d7Ef2f928a6c72FB1E63560CD986b98C54f7);
+    // HNYb public HNYb_TOKEN = HNYb(0x0981d7Ef2f928a6c72FB1E63560CD986b98C54f7);
+    HNYb public HNYb_TOKEN = HNYb(0xE401f093bAe2272F14dfCd13B04399FDf6Fd55e4);
 
+    // uint256 public sellPrice = 2600;
+    // uint256 public buyPrice = 2000; 
     uint256 public sellPrice = 2600;
     uint256 public buyPrice = 2000; 
     bool public open = true; 
@@ -26,6 +29,12 @@ contract HONEYBANK is AccessControlEnumerable {
     public view returns (uint256)
     {
         return HNYb_TOKEN.balanceOf(address(this));
+    }
+
+    function HNYbBalanceOfUser() 
+    public view returns (uint256)
+    {
+        return HNYb_TOKEN.balanceOf(msg.sender);
     }
 
     function MATICBalance() 

@@ -16,14 +16,3 @@ Scripts have full access to the web3.js and ethers.js libraries.
 To run a script, right click on file name in the file explorer and click 'Run'. Remember, Solidity file must already be compiled.
 
 Output from script will appear in remix terminal.
-
-
-
-
-
-HNYb.sol
-0x0981d7Ef2f928a6c72FB1E63560CD986b98C54f7
-bCityv1.sol
-0xF64d243928A377eC3A231b047b6804e9C66A33Bb
-HONEYBANK.sol
-0x050A45e7f5A36b836f2355904D4A7a7314B8d816
