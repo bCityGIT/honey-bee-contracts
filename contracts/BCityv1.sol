@@ -9,7 +9,8 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 contract BCityv1 is ERC721PresetMinterPauserAutoId {
 
     // HNYb public HNYb_TOKEN = HNYb(0x0981d7Ef2f928a6c72FB1E63560CD986b98C54f7);
-    HNYb public HNYb_TOKEN = HNYb(0xE0907b6fba0E6dDBb6aE1b1D447697C55AA7Ac7E);
+    // HNYb public HNYb_TOKEN = HNYb(0xE0907b6fba0E6dDBb6aE1b1D447697C55AA7Ac7E); //main
+    HNYb public HNYb_TOKEN = HNYb(0x5C0004Dab31AE74017C46c9F14cD3dd657979FBe);
 
     using Strings for uint256;
    
@@ -18,11 +19,9 @@ contract BCityv1 is ERC721PresetMinterPauserAutoId {
     uint8 public bankPercent = 70;
     uint8 public maxMintAmount = 30;
     // uint256 public price = 255000000000000000000; // start at 255MATIC
-    // address payable treasury = payable(0xaD4b5983a5bbcc29E6F0860D8f126B68A3850984); // bCity treasury
-    // address payable bank = payable(0x050A45e7f5A36b836f2355904D4A7a7314B8d816); // bCity bank
     uint256 public price = 10000000000000000; // start at 0.1MATIC
     address payable treasury = payable(0xaD4b5983a5bbcc29E6F0860D8f126B68A3850984); // bCity treasury
-    address payable bank = payable(0x3a46324bC7A4C499d9f670021a7C4acaBb5C9f1F); // bCity bank
+    address payable bank = payable(0x83401FaBb9a7CB39f89a26a013f51B197D72F318); // bCity bank
 
     string URIRoot = "https://gateway.pinata.cloud/ipfs/QmZQZTxVvz1BNQJWodVUVceNSsLTtWu5qAfrMJzRSoNfPX/";
     struct Bee {
@@ -42,21 +41,11 @@ contract BCityv1 is ERC721PresetMinterPauserAutoId {
     function shuffleShapeIds() 
     private 
     {
-        uint256[100] memory unshuffled;
         remainShapeCounts = 100;
 
         for (uint256 i = 0; i < 100; i++) {
-            unshuffled[i] = i + 1;
+            shapeIds[i] = i + 1;
         }
-
-        for (uint256 i = 0; i < 100; i++) {
-            uint256 n = i + uint256(keccak256(abi.encodePacked(block.timestamp))) % (100 - i);
-            uint256 temp = unshuffled[n];
-            unshuffled[n] = unshuffled[i];
-            unshuffled[i] = temp;
-        }
-
-        shapeIds = unshuffled;
     }
     
     constructor() ERC721PresetMinterPauserAutoId("bCity", "BCITY", URIRoot) {
@@ -66,9 +55,11 @@ contract BCityv1 is ERC721PresetMinterPauserAutoId {
     function removeSelectedShapeId(uint256 index)
     private 
     {
-        for (uint256 i = index; i < 99; i++) {
-            shapeIds[i] = shapeIds[i + 1];
-            shapeIds[i + 1] = 0;
+        if (index == remainShapeCounts - 1) {
+            shapeIds[index] = 0;
+        } else {
+            shapeIds[index] = shapeIds[remainShapeCounts - 1];
+            shapeIds[remainShapeCounts - 1] = 0;
         }
 
         remainShapeCounts--;
@@ -227,9 +218,11 @@ contract BCityv1 is ERC721PresetMinterPauserAutoId {
         if (remainShapeCounts == 0) {
             shuffleShapeIds();
         }
+        require(remainShapeCounts > 0, "remainShapeCounts must greater than 0");
         uint256 randomIndex = i % remainShapeCounts;
         uint256 j = shapeIds[randomIndex];
         uint result = 6; // Miner
+        require(j > 0 && j <= 100, "shapeID must be between 1~100");
         if (j > 97 && j <= 100) {
             result = 0; // Queen
         }
