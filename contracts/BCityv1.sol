@@ -8,14 +8,20 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract BCityv1 is ERC721PresetMinterPauserAutoId {
 
-    HNYb public HNYb_TOKEN = HNYb(0x0981d7Ef2f928a6c72FB1E63560CD986b98C54f7);
+    // HNYb public HNYb_TOKEN = HNYb(0x0981d7Ef2f928a6c72FB1E63560CD986b98C54f7);
+    // HNYb public HNYb_TOKEN = HNYb(0xE0907b6fba0E6dDBb6aE1b1D447697C55AA7Ac7E); //main
+    HNYb public HNYb_TOKEN = HNYb(0x5C0004Dab31AE74017C46c9F14cD3dd657979FBe);
 
     using Strings for uint256;
    
     uint16 public maxSupply = 9999;
-    uint256 public price = 255000000000000000000; // start at 255MATIC
+    uint8 public treasuryPercent = 30;
+    uint8 public bankPercent = 70;
+    uint8 public maxMintAmount = 30;
+    // uint256 public price = 255000000000000000000; // start at 255MATIC
+    uint256 public price = 10000000000000000; // start at 0.1MATIC
     address payable treasury = payable(0xaD4b5983a5bbcc29E6F0860D8f126B68A3850984); // bCity treasury
-    address payable bank = payable(0x050A45e7f5A36b836f2355904D4A7a7314B8d816); // bCity bank
+    address payable bank = payable(0x83401FaBb9a7CB39f89a26a013f51B197D72F318); // bCity bank
 
     string URIRoot = "https://gateway.pinata.cloud/ipfs/QmZQZTxVvz1BNQJWodVUVceNSsLTtWu5qAfrMJzRSoNfPX/";
     struct Bee {
@@ -29,8 +35,34 @@ contract BCityv1 is ERC721PresetMinterPauserAutoId {
 
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
+    uint256[100] private shapeIds;
+    uint256 private remainShapeCounts = 100;
+
+    function shuffleShapeIds() 
+    private 
+    {
+        remainShapeCounts = 100;
+
+        for (uint256 i = 0; i < 100; i++) {
+            shapeIds[i] = i + 1;
+        }
+    }
     
     constructor() ERC721PresetMinterPauserAutoId("bCity", "BCITY", URIRoot) {
+        shuffleShapeIds();
+    }
+
+    function removeSelectedShapeId(uint256 index)
+    private 
+    {
+        if (index == remainShapeCounts - 1) {
+            shapeIds[index] = 0;
+        } else {
+            shapeIds[index] = shapeIds[remainShapeCounts - 1];
+            shapeIds[remainShapeCounts - 1] = 0;
+        }
+
+        remainShapeCounts--;
     }
 
     function updateBank(address payable _b) 
@@ -78,6 +110,26 @@ contract BCityv1 is ERC721PresetMinterPauserAutoId {
         require(hasRole(MINTER_ROLE, _msgSender()), "You don't have permission to do this.");
         price = _price;
     }
+
+    function changeTreasuryWallet(address _address) public {
+        require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "You don't have permission to do this.");
+        treasury = payable(_address);
+    }
+
+    function getTreasuryWallet() 
+    public view returns (address)
+    {
+        require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "You don't have permission to do this.");
+        return treasury;
+    }
+
+    function changeSettings(uint16 _maxSupply, uint8 _treasuryPercent, uint8 _bankPercent, uint8 _maxMintAmount) public {
+        require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "You don't have permission to do this.");
+        maxSupply = _maxSupply;
+        treasuryPercent = _treasuryPercent;
+        bankPercent = _bankPercent;
+        maxMintAmount = _maxMintAmount;
+    }
     
     function updateURI(string memory _newURI) public {
         require(hasRole(MINTER_ROLE, _msgSender()), "You don't have permission to do this.");
@@ -86,7 +138,7 @@ contract BCityv1 is ERC721PresetMinterPauserAutoId {
     
     function buy(uint8 quantity) payable external {
         require(quantity > 0, "Quantity must be more than 1.");
-        require(quantity <= 30, "Quantity must be less than 30.");
+        require(quantity <= maxMintAmount, "Quantity must be less than 30.");
         require(msg.value >= price * quantity, "Not enough MATIC.");
         mintNFT(quantity);
         payAccounts();
@@ -101,7 +153,8 @@ contract BCityv1 is ERC721PresetMinterPauserAutoId {
         
         for (uint i = 0; i < amount; i++) { 
             uint256 currentID = _tokenIds.current();
-            uint shape = getBeeShape(currentID);
+            uint256 randomId = uint256(keccak256(abi.encodePacked(block.timestamp)));
+            uint shape = getBeeShape(randomId);
             _mint(msg.sender, currentID);
             createBee(currentID, shape);
             _tokenIds.increment();
@@ -160,31 +213,38 @@ contract BCityv1 is ERC721PresetMinterPauserAutoId {
 
     function getBeeShape(uint256 i) 
     private
-    pure
     returns (uint)
     {
-        uint256 j = i;
-        if (j % 100 == 0) {
-            return 0; // Queen
+        if (remainShapeCounts == 0) {
+            shuffleShapeIds();
         }
-        else if (j % 13 == 0) {
-            return 1; // Karen
+        require(remainShapeCounts > 0, "remainShapeCounts must greater than 0");
+        uint256 randomIndex = i % remainShapeCounts;
+        uint256 j = shapeIds[randomIndex];
+        uint result = 6; // Miner
+        require(j > 0 && j <= 100, "shapeID must be between 1~100");
+        if (j > 97 && j <= 100) {
+            result = 0; // Queen
         }
-        else if (j % 12 == 0) {
-            return 2; // Buzzy
+        else if (j > 90 && j <= 97) {
+            result = 1; // Karen
         }
-        else if (j % 11 == 0) {
-            return 3; // Tobi
+        else if (j > 79 && j <= 90) {
+            result = 2; // Buzzy
         }
-        else if (j % 3 == 0) {
-            return 4; // Demolition
+        else if (j > 65 && j <= 79) {
+            result = 3; // Tobi
         }
-        else if (j % 2 == 0) {
-            return 5; // Excavator
+        else if (j > 47 && j <= 65) {
+            result = 4; // Demolition
         }
-        else {
-            return 6; // Miner
+        else if (j > 25 && j <= 47) {
+            result = 5; // Excavator
         }
+
+        removeSelectedShapeId(randomIndex);
+
+        return result;
     }
     
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
@@ -197,8 +257,8 @@ contract BCityv1 is ERC721PresetMinterPauserAutoId {
     function payAccounts() public payable {
         uint256 balance = address(this).balance;
         if (balance > 0) {
-            uint256 devCut = balance * 30 / 100;
-            uint256 bankCut = balance * 70 / 100;
+            uint256 devCut = balance * treasuryPercent / 100;
+            uint256 bankCut = balance * bankPercent / 100;
             treasury.transfer(devCut);
             bank.transfer(bankCut);
         }
