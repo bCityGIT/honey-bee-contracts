@@ -7,10 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/presets/ERC721PresetMinterPauserAut
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract BCityv1 is ERC721PresetMinterPauserAutoId {
-
-    // HNYb public HNYb_TOKEN = HNYb(0x0981d7Ef2f928a6c72FB1E63560CD986b98C54f7);
-    // HNYb public HNYb_TOKEN = HNYb(0xE0907b6fba0E6dDBb6aE1b1D447697C55AA7Ac7E); //main
-    HNYb public HNYb_TOKEN = HNYb(0x5C0004Dab31AE74017C46c9F14cD3dd657979FBe);
+    HNYb public HNYb_TOKEN = HNYb(0x8eBafD8dE97Ef70992275a11165E232bC6b2C40c);
 
     using Strings for uint256;
    
@@ -20,7 +17,7 @@ contract BCityv1 is ERC721PresetMinterPauserAutoId {
     uint8 public maxMintAmount = 30;
     uint256 public price = 200000000000000000000; // start at 255MATIC
     address payable treasury = payable(0x1e93348bd40A9C55d315FC994b31649019BC7334); // bCity treasury
-    address payable bank = payable(0x83401FaBb9a7CB39f89a26a013f51B197D72F318); // bCity bank
+    address payable bank = payable(0x259D0FeC274b5BA0E6bD38dA18C4cfC735d9510b); // bCity bank
 
     string URIRoot = "https://gateway.pinata.cloud/ipfs/QmWRcBW9VWpQe9KAyE6FmR1rkMjiMXLp8LnehJPFbjZUg9/";
     struct Bee {
