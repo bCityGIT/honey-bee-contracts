@@ -18,12 +18,11 @@ contract BCityv1 is ERC721PresetMinterPauserAutoId {
     uint8 public treasuryPercent = 30;
     uint8 public bankPercent = 70;
     uint8 public maxMintAmount = 30;
-    // uint256 public price = 255000000000000000000; // start at 255MATIC
-    uint256 public price = 10000000000000000; // start at 0.1MATIC
-    address payable treasury = payable(0xaD4b5983a5bbcc29E6F0860D8f126B68A3850984); // bCity treasury
+    uint256 public price = 200000000000000000000; // start at 255MATIC
+    address payable treasury = payable(0x1e93348bd40A9C55d315FC994b31649019BC7334); // bCity treasury
     address payable bank = payable(0x83401FaBb9a7CB39f89a26a013f51B197D72F318); // bCity bank
 
-    string URIRoot = "https://gateway.pinata.cloud/ipfs/QmZQZTxVvz1BNQJWodVUVceNSsLTtWu5qAfrMJzRSoNfPX/";
+    string URIRoot = "https://gateway.pinata.cloud/ipfs/QmWRcBW9VWpQe9KAyE6FmR1rkMjiMXLp8LnehJPFbjZUg9/";
     struct Bee {
         uint shape;
         uint256 honeyPerDay;

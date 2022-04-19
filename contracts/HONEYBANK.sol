@@ -9,11 +9,8 @@ contract HONEYBANK is AccessControlEnumerable {
 
     // HNYb public HNYb_TOKEN = HNYb(0x0981d7Ef2f928a6c72FB1E63560CD986b98C54f7);
     HNYb public HNYb_TOKEN = HNYb(0x5C0004Dab31AE74017C46c9F14cD3dd657979FBe);
-
-    // uint256 public sellPrice = 2600;
-    // uint256 public buyPrice = 2000; 
-    uint256 public sellPrice = 2600;
-    uint256 public buyPrice = 2000; 
+    uint256 public sellPrice = 2;
+    uint256 public buyPrice = 2; 
     bool public open = true; 
     
     constructor() {
